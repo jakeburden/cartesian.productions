@@ -1,12 +1,13 @@
 var fileReader = require('filereader-stream')
 var csv = require('csv-parser')
 var work = require('webworkify')
+var worker = require('../worker.js')
 
 module.exports = store
 
 function store (state, emitter) {
   emitter.on('DOMContentLoaded', function () {
-    var w = work(require('../worker.js'))
+    var w = work(worker)
     emitter.on('files', function (files) {
       state.product = null
       state.cols = []
