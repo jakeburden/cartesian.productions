@@ -1,13 +1,11 @@
 var fileReader = require('filereader-stream')
 var csv = require('csv-parser')
-var work = require('webworkify')
-var worker = require('../worker.js')
+var product = require('cartesian-product')
 
 module.exports = store
 
 function store (state, emitter) {
   emitter.on('DOMContentLoaded', function () {
-    var w = work(worker)
     emitter.on('files', function (files) {
       state.product = null
       state.cols = []
@@ -25,11 +23,8 @@ function store (state, emitter) {
         })
       })
       stream.on('end', function () {
-        w.addEventListener('message', function (ev) {
-          state.product = ev.data
-          emitter.emit(state.events.RENDER)
-        })
-        w.postMessage(state.cols)
+        state.product = product(state.cols)
+        emitter.emit(state.events.RENDER)
       })
     })
   })
